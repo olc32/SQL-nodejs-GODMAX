@@ -8,9 +8,21 @@ var lastime = 0;
 var skipetime = 1;
 var seconds = 0;
 
-var imgpincho = document.createElement("img");
-imgpincho.src = "pincho.png";
-imgpincho.style.width = "50px";
+
+// Array para almacenar pinchos
+var pinchos = [];
+var pinchoSpeed = 300; // px/s
+var cubeSizeW = 50;
+var cubeSizeH = 50;
+
+// Estado del juego
+
+var gameState = {
+//Debido a que este juego esta inspirado en Geometry Dash, el jugador solo tiene una vida, por lo que al perder se termina el juego.
+    vidas: 1,
+    gameOver: false,
+    puntaje: 0
+};
 
 cube.style.position = "absolute";
 cube.style.bottom = "0px";

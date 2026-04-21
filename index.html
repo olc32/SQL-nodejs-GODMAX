@@ -7,10 +7,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="juego" >
-        
+    <div id="juego">
         <img src="cube_15.png" alt="cube" id="cube">
     </div>
+    
+    <!-- Contador de vidas -->
+    <div id="vidasContainer">
+        <span>Vidas: </span>
+        <span id="vidas">3</span>
+    </div>
+    
+    <!-- Pantalla de Game Over -->
+    <div id="gameOverScreen">
+        <div id="gameOverContent">
+            <h1>GAME OVER</h1>
+            <p>¡Perdiste todas tus vidas!</p>
+            <button onclick="restartGame()">Reiniciar Juego</button>
+        </div>
+    </div>
+    
     <script src="script.js"></script>
 </body>
 </html>
