@@ -9,12 +9,16 @@ var skipetime = 1;
 var seconds = 0;
 var pinchos = [];
 var en_tierra = true;
+const url = "lacanciondelsiglo.mp3";
+const url2 = "laotracancion.mp3";
+const music = new Audio(url2);
+music.play();
 
 cube.style.position = "absolute";
 cube.style.bottom = "0px";
 window.addEventListener("click", function() {
     if (en_tierra) {
-    velocity = 15;
+    velocity = 25;
     en_tierra = false;
     }
 });
@@ -22,7 +26,7 @@ window.addEventListener("click", function() {
 window.addEventListener("keydown", function(event) {
     if (event.code === "Space") {
         if (en_tierra) {
-        velocity = 15;
+        velocity = 25;
         en_tierra = false;
         }
     }
@@ -48,6 +52,8 @@ function gameLoop() {
         seconds = 0;
         createPincho();
     }
+   
+
 }
 
 gameLoop();
@@ -79,4 +85,26 @@ function moverPincho(pincho) {
         document.body.removeChild(pincho);
         pinchos.splice(pinchos.indexOf(pincho), 1);
     }
+    if (checkCollision(cube, pincho)) {
+        //alert("¡Has perdido!");
+        location.reload();
+    }
+}
+
+
+function rotarGradiente() {
+    angulo = (angulo + 1) % 360; // Mantener entre 0 y 359
+    body.style.background = `linear-gradient(${angulo}deg, red, blue)`;
+    requestAnimationFrame(rotarGradiente); // Animación fluida
+}
+
+function checkCollision(cube, pincho) {
+    var cubeRect = cube.getBoundingClientRect();
+    var pinchoRect = pincho.getBoundingClientRect();
+    return !(
+        cubeRect.right < pinchoRect.left ||
+        cubeRect.left > pinchoRect.right ||
+        cubeRect.bottom < pinchoRect.top ||
+        cubeRect.top > pinchoRect.bottom
+    );
 }
