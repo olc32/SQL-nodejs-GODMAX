@@ -7,15 +7,25 @@ var y = 0;
 var lastime = 0;
 var skipetime = 1;
 var seconds = 0;
-
-var imgpincho = document.createElement("img");
-imgpincho.src = "pincho.png";
-imgpincho.style.width = "50px";
+var pinchos = [];
+var en_tierra = true;
 
 cube.style.position = "absolute";
 cube.style.bottom = "0px";
 window.addEventListener("click", function() {
+    if (en_tierra) {
     velocity = 15;
+    en_tierra = false;
+    }
+});
+
+window.addEventListener("keydown", function(event) {
+    if (event.code === "Space") {
+        if (en_tierra) {
+        velocity = 15;
+        en_tierra = false;
+        }
+    }
 });
 
 function gameLoop() {
@@ -28,6 +38,7 @@ function gameLoop() {
     if (parseInt(y) <= 0) {
         y = 0;
         velocity = 0;
+        en_tierra = true;
     }
     console.log("Velocity: " + velocity + " | Bottom: " + cube.style.bottom + " | Y: " + y + " | DeltaTime: " + deltaTime + " | Seconds: " + seconds);
     requestAnimationFrame(gameLoop);
@@ -44,9 +55,28 @@ gameLoop();
 function createPincho() {
     console.log("Pincho creado");
     var pincho = document.createElement("div");
-    pincho.style.position = "absolute";
-    pincho.appendChild(imgpincho);
+    pincho.style.position = "fixed";
+    var img = document.createElement("img");
+    img.src = "pincho.png";
+    img.style.width = "50px";
+    pincho.appendChild(img);
     document.body.appendChild(pincho);
-    pincho.style.left = "90%";
+    pincho.style.right = "0px";
     pincho.style.bottom = "0px";
+    pinchos.push(pincho);
+    moverPincho(pincho);
+}
+
+function moverPincho(pincho) {
+    var right = parseInt(pincho.style.right);
+    right += 5;
+    pincho.style.right = right + "px";
+    if (right < window.innerWidth) {
+        requestAnimationFrame(function() {
+            moverPincho(pincho);
+        });
+    } else {
+        document.body.removeChild(pincho);
+        pinchos.splice(pinchos.indexOf(pincho), 1);
+    }
 }
