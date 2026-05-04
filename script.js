@@ -9,6 +9,9 @@ var skipetime = 1;
 var seconds = 0;
 var pinchos = [];
 var en_tierra = true;
+var jumpspeed = 17;
+var hitboxacurracity = 0.8;
+
 const url = "lacanciondelsiglo.mp3";
 const url2 = "laotracancion.mp3";
 const music = new Audio(url2);
@@ -18,7 +21,7 @@ cube.style.position = "absolute";
 cube.style.bottom = "0px";
 window.addEventListener("click", function() {
     if (en_tierra) {
-    velocity = 25;
+    velocity = jumpspeed;
     en_tierra = false;
     }
 });
@@ -26,7 +29,7 @@ window.addEventListener("click", function() {
 window.addEventListener("keydown", function(event) {
     if (event.code === "Space") {
         if (en_tierra) {
-        velocity = 25;
+        velocity = jumpspeed;
         en_tierra = false;
         }
     }
@@ -102,9 +105,9 @@ function checkCollision(cube, pincho) {
     var cubeRect = cube.getBoundingClientRect();
     var pinchoRect = pincho.getBoundingClientRect();
     return !(
-        cubeRect.right < pinchoRect.left ||
-        cubeRect.left > pinchoRect.right ||
-        cubeRect.bottom < pinchoRect.top ||
-        cubeRect.top > pinchoRect.bottom
+        cubeRect.right < pinchoRect.left + (pinchoRect.width * (1 - hitboxacurracity)) ||
+        cubeRect.left > pinchoRect.right - (pinchoRect.width * (1 - hitboxacurracity)) ||
+        cubeRect.bottom < pinchoRect.top + (pinchoRect.height * (1 - hitboxacurracity)) ||
+        cubeRect.top > pinchoRect.bottom - (pinchoRect.height * (1 - hitboxacurracity))
     );
 }
