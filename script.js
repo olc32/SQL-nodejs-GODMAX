@@ -7,20 +7,20 @@ var y = 0;
 var lastime = 0;
 var skipetime = 0.15;
 var seconds = 0;
-var nivel =  [[0, 1, 1, 0, 1, 1, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 1, 0, 1, 0, 1, 1, 0, 0, 1]];
+var nivel =  [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 1, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 1, 2]];
 var angulo = 0;
 var pinchos = [];
 var en_tierra = true;
 var jumpspeed = 17;
-var hitboxacurracity = 0.8;
+var hitboxacurracity = 0.6;
 var debuglogticks = false;
 var debuglogbloques = false;
 var bloqueidx = 0;
 var bloquetipos = [0, 1]; // Tipos de bloques disponibles, actualmente aire y pinchos (1)
-var capa = 0; // Capa del nivel que se usará para generar bloques (0-3)
+var capa = 3; // Capa del nivel que se usará para generar bloques (0-3)
 
 const url = "lacanciondelsiglo.mp3";
 const url2 = "laotracancion.mp3";
@@ -84,6 +84,12 @@ function createBloque() {
         if (nivel[capa][bloqueidx] === 1) {
             img.src = "pincho.png";
             img.style.width = "50px";
+        }else if (nivel[capa][bloqueidx] === 2) {
+            img.src = "mitad.svg";
+            img.style.width = "50px";
+        }else if (nivel[capa][bloqueidx] === 3) {
+            img.src = "Bloque.webp";
+            img.style.width = "50px";
         } else {
             //mas bloques en el futuro
         }
@@ -119,7 +125,9 @@ function moverPincho(pincho) {
         document.body.removeChild(pincho);
         pinchos.splice(pinchos.indexOf(pincho), 1);
     }
-    if (checkCollision(cube, pincho)) {
+    var collision = checkCollision(cube, pincho);
+    console.log(collision);
+    if (collision.side !== "sin colisión") {
         //alert("¡Has perdido!");
         cube.remove();
         location.href = "game-over.html";
@@ -136,16 +144,59 @@ function rotarGradiente() {
 function checkCollision(cube, pincho) {
     var cubeRect = cube.getBoundingClientRect();
     var pinchoRect = pincho.getBoundingClientRect();
-    return !(
-        cubeRect.right < pinchoRect.left + (pinchoRect.width * (1 - hitboxacurracity)) ||
-        cubeRect.left > pinchoRect.right - (pinchoRect.width * (1 - hitboxacurracity)) ||
-        cubeRect.bottom < pinchoRect.top + (pinchoRect.height * (1 - hitboxacurracity)) ||
-        cubeRect.top > pinchoRect.bottom - (pinchoRect.height * (1 - hitboxacurracity))
-    );
+    var marginX = pinchoRect.width * (1 - hitboxacurracity) / 2;
+    var marginY = pinchoRect.height * (1 - hitboxacurracity) / 2;
+
+    var hitboxRect = {
+        left: pinchoRect.left + marginX,
+        right: pinchoRect.right - marginX,
+        top: pinchoRect.top + marginY,
+        bottom: pinchoRect.bottom - marginY
+    };
+
+    function rectsOverlap(a, b) {
+        return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+    }
+
+    function getCollisionSide(a, b) {
+        var centerAX = (a.left + a.right) / 2;
+        var centerAY = (a.top + a.bottom) / 2;
+        var centerBX = (b.left + b.right) / 2;
+        var centerBY = (b.top + b.bottom) / 2;
+        var deltaX = centerAX - centerBX;
+        var deltaY = centerAY - centerBY;
+
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            return deltaX < 0 ? "frontal" : "trasero";
+        }
+
+        return deltaY < 0 ? "superior" : "inferior";
+    }
+
+    if (rectsOverlap(cubeRect, hitboxRect)) {
+        return {
+            side: getCollisionSide(cubeRect, pinchoRect),
+            hitboxAccuracy: true
+        };
+    }
+
+    if (rectsOverlap(cubeRect, pinchoRect)) {
+        return {
+            side: getCollisionSide(cubeRect, pinchoRect),
+            hitboxAccuracy: false
+        };
+    }
+
+    return {
+        side: "sin colisión",
+        hitboxAccuracy: false
+    };
 }
 
 
 function pararconsola() {
     debuglogticks = !debuglogticks;
+    debuglogbloques = !debuglogbloques;
     console.log("Debug log ticks: " + debuglogticks);
+    console.log("Debug log bloques: " + debuglogbloques);
 }

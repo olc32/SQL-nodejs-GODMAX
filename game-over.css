@@ -1,7 +1,7 @@
 body{
-    background-color: linear-gradient(90deg, rgba(13, 0, 255, 1) 0%, rgba(0, 0, 0, 1) 50%);
+    background: linear-gradient(90deg, rgba(13, 0, 255, 1) 0%, rgba(0, 0, 0, 1) 50%);
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: 'Audiowide', sans-serif;
     text-align: center;
     padding-top: 50px;
 }
